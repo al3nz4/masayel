@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام المسايل لغسيل السجاد</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#1B2A6B;--navy-d:#111D4A;--navy-l:#2A3F8F;--red:#E8452C;--red-l:#FF6B4E;--red-bg:#FFF0ED;--grn:#10b981;--grn-bg:#ECFDF5;--grn-d:#047857;--ylw:#f59e0b;--ylw-bg:#FFFBEB;--ylw-d:#92400e;--blk:#0f172a;--gry:#64748b;--brd:#e2e8f0;--bg:#f8fafc;--wht:#ffffff;--sh:0 1px 3px rgba(0,0,0,.08);--sh-l:0 10px 25px rgba(27,42,107,.15);--r:10px}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--blk);min-height:100vh}
+.hid{display:none!important}
+.login-w{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy),var(--navy-d) 60%,#0a1235);position:relative;overflow:hidden}
+.login-w::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:var(--red);opacity:.08;top:-100px;left:-100px}
+.lbox{background:var(--wht);padding:44px 36px;border-radius:16px;box-shadow:var(--sh-l);text-align:center;width:370px;max-width:92vw;position:relative;z-index:1}
+.lbox .lt{font-size:26px;font-weight:800;color:var(--navy)}
+.lbox .ls{font-size:13px;color:var(--gry);margin:4px 0 28px}
+.ig{margin-bottom:14px;text-align:right}
+.ig label{display:block;font-size:13px;color:var(--gry);margin-bottom:5px;font-weight:500}
+.ig input,.fr input,.fr select,.fr textarea{width:100%;padding:10px 12px;border:1.5px solid var(--brd);border-radius:8px;font-family:inherit;font-size:14px;outline:none;transition:.2s}
+.ig input:focus,.fr input:focus,.fr select:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(27,42,107,.08)}
+.btn{padding:11px 20px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:active{transform:scale(.97)}
+.bp{background:var(--navy);color:#fff;width:100%;justify-content:center;padding:13px}.bp:hover{background:var(--navy-l)}
+.br{background:var(--red);color:#fff}.bg{background:var(--grn);color:#fff}
+.bo{background:transparent;border:1.5px solid var(--brd);color:var(--blk)}.bo:hover{border-color:var(--navy);color:var(--navy)}
+.bs{padding:7px 13px;font-size:13px}
+.rg{display:grid;gap:10px;margin-top:10px}
+.rc{padding:14px;border:2px solid var(--brd);border-radius:10px;cursor:pointer;transition:.2s;text-align:center;font-weight:600;font-size:15px;color:var(--navy)}
+.rc:hover{border-color:var(--navy);background:rgba(27,42,107,.03)}
+.rc span{font-size:26px;display:block;margin-bottom:4px}
+
+.app{display:flex;height:100vh;overflow:hidden}
+.sb{width:230px;background:var(--navy-d);color:#fff;display:flex;flex-direction:column;flex-shrink:0}
+.sb-h{padding:18px;text-align:center;border-bottom:1px solid rgba(255,255,255,.1)}
+.sb-h .sl{font-size:18px;font-weight:800}
+.sb-h .ss{font-size:11px;opacity:.6;margin-top:2px}
+.sb-u{padding:12px 16px;background:rgba(255,255,255,.06);margin:10px;border-radius:8px;font-size:13px}
+.sb-u .sn{font-weight:600;font-size:14px}
+.sb-u .sr{opacity:.6;font-size:12px;margin-top:2px}
+.sb-n{flex:1;padding:6px 10px;overflow-y:auto}
+.ni{padding:10px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;transition:.2s;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.ni:hover{background:rgba(255,255,255,.1)}.ni.act{background:var(--red);font-weight:600}
+.nd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sb-f{padding:12px;border-top:1px solid rgba(255,255,255,.1)}
+.lo{width:100%;padding:9px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;cursor:pointer;font-family:inherit;font-size:13px}.lo:hover{background:var(--red)}
+
+.mn{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.tb{background:var(--wht);border-bottom:1px solid var(--brd);padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.tb h1{font-size:18px;font-weight:700;color:var(--navy)}
+.ct{flex:1;overflow-y:auto;padding:20px}
+
+.cd{background:var(--wht);border-radius:12px;border:1px solid var(--brd);padding:18px;margin-bottom:14px;box-shadow:var(--sh)}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.ct-t{font-size:15px;font-weight:700;color:var(--navy)}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--bg)}
+th{padding:10px 12px;text-align:right;font-size:12px;font-weight:600;color:var(--navy);border-bottom:2px solid var(--brd)}
+td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--brd)}
+tr:hover{background:rgba(27,42,107,.015)}
+.bdg{display:inline-block;padding:3px 10px;border-radius:16px;font-size:11px;font-weight:600}
+.b-p{background:var(--grn-bg);color:var(--grn-d)}.b-u{background:#f1f5f9;color:var(--blk)}.b-c{background:var(--red-bg);color:var(--red)}.b-pc{background:var(--ylw-bg);color:var(--ylw-d)}.b-a{background:var(--grn-bg);color:var(--grn-d)}.b-b{background:var(--red-bg);color:var(--red)}
+
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+.st{padding:16px;border-radius:12px;color:#fff;position:relative;overflow:hidden}
+.st::after{content:'';position:absolute;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.1);top:-15px;left:-15px}
+.st-n{background:linear-gradient(135deg,var(--navy),var(--navy-l))}.st-r{background:linear-gradient(135deg,var(--red),var(--red-l))}.st-g{background:linear-gradient(135deg,var(--grn-d),var(--grn))}.st-y{background:linear-gradient(135deg,#b45309,var(--ylw))}
+.st h3{font-size:24px;font-weight:800;position:relative;z-index:1}.st p{font-size:11px;opacity:.85;margin-top:2px;position:relative;z-index:1}
+
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center}
+.mo.sh{display:flex}
+.mc{background:#fff;border-radius:14px;width:92%;max-width:520px;max-height:88vh;overflow-y:auto;box-shadow:var(--sh-l)}
+.mh{padding:18px 22px;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center}
+.mh h2{font-size:17px;font-weight:700;color:var(--navy)}
+.mx{width:30px;height:30px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.mb{padding:22px}
+.fr{margin-bottom:12px}
+.fr label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:5px}
+
+.ic{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.icc{padding:18px 12px;border:2px solid var(--brd);border-radius:12px;text-align:center;cursor:pointer;transition:.2s;font-weight:700;font-size:14px;color:var(--navy)}
+.icc:hover{border-color:var(--navy);background:rgba(27,42,107,.03)}
+.icc.sel{border-color:var(--red);background:var(--red-bg);color:var(--red)}
+.icc span{font-size:28px;display:block;margin-bottom:4px}
+.so{padding:12px;border:1.5px solid var(--brd);border-radius:10px;cursor:pointer;transition:.2s;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.so:hover{border-color:var(--navy)}.so.sel{border-color:var(--grn);background:var(--grn-bg)}
+.it{background:linear-gradient(135deg,var(--navy),var(--navy-l));color:#fff;padding:14px 18px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.it .tl{font-size:13px}.it .ta{font-size:22px;font-weight:800}
+.cr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+.al{padding:10px 14px;border-radius:8px;margin-bottom:10px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px}
+.al-r{background:var(--red-bg);color:var(--red);border:1px solid #fecaca}
+.al-y{background:var(--ylw-bg);color:var(--ylw-d);border:1px solid #fde68a}
+.al-g{background:var(--grn-bg);color:var(--grn-d);border:1px solid #a7f3d0}
+
+.dg{margin-bottom:18px}
+.dh{padding:9px 14px;background:var(--navy);color:#fff;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;display:flex;justify-content:space-between}
+.dl{border:1px solid var(--brd);border-top:none;border-radius:0 0 8px 8px;overflow:hidden}
+.dr{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd);font-size:12px;cursor:pointer;transition:.12s}
+.dr:last-child{border-bottom:none}.dr:hover{background:var(--bg)}
+
+.wr{display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid var(--brd)}
+.wa{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.wi{flex:1}.wn{font-weight:600;font-size:13px}.wj{font-size:11px;color:var(--gry)}
+
+.ld{text-align:center;padding:40px;color:var(--gry)}
+.ld::after{content:'';display:block;width:30px;height:30px;border:3px solid var(--navy);border-top-color:transparent;border-radius:50%;margin:12px auto;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:700px){.sb{width:56px}.sb-h .ss,.sb-u .sr,.sb-u .sn,.ni span{display:none}.ni{justify-content:center;padding:10px}.sb-h{padding:10px}}
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="login-w">
+<div class="lbox">
+<div class="lt">Masayel</div>
+<div class="ls">المسايل لغسيل السجاد</div>
+<div id="loginForm">
+<div id="loginTitle" style="margin-bottom:18px">
+<span style="font-size:28px;display:block;margin-bottom:4px">👑</span>
+<h3 style="font-size:16px;color:var(--navy);font-weight:600">المدير العام</h3>
+</div>
+<div class="ig"><label>اسم المستخدم</label><input type="text" id="lUser" value="admin" readonly style="background:#f1f5f9;font-weight:600"></div>
+<div class="ig"><label>الرقم السري</label><input type="password" id="lPass" placeholder="أدخل الرقم السري"></div>
+<button class="btn bp" onclick="doLogin()" style="margin-top:6px">دخول</button>
+<p id="lErr" class="hid" style="color:var(--red);font-size:13px;margin-top:10px"></p>
+</div>
+</div>
+</div>
+
+<div id="app" class="app hid">
+<aside class="sb">
+<div class="sb-h"><div class="sl">المسايل</div><div class="ss">Carpet Cleaning</div></div>
+<div class="sb-u"><div class="sn" id="sN"></div><div class="sr" id="sR"></div></div>
+<nav class="sb-n" id="sNav"></nav>
+<div class="sb-f"><button class="lo" onclick="logout()">تسجيل الخروج</button></div>
+</aside>
+<div class="mn">
+<div class="tb"><h1 id="pT">الرئيسية</h1><span style="font-size:12px;color:var(--gry)" id="tD"></span></div>
+<div class="ct" id="pC"></div>
+</div>
+</div>
+
+<div id="mOv" class="mo"><div class="mc"><div class="mh"><h2 id="mTi"></h2><button class="mx" onclick="clM()">✕</button></div><div class="mb" id="mBd"></div></div></div>
+
+<script>
+const SB_URL='https://iopigfghuxysssttgecw.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlvcGlnZmdodXh5c3NzdHRnZWN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3MTI2MzYsImV4cCI6MjEwNTI4ODYzNn0.H98rvBq2LxYNBwZldEFZJEsdJLAki62Ao_6TT-_vSNk';
+const db=supabase.createClient(SB_URL,SB_KEY);
+
+let U=null,pg='home';
+const RL={'admin':'المدير العام','manager':'مدير','callcenter':'كول سنتر','worker':'عامل'};
+const SL={'paid':'مدفوعة','unpaid':'غير مدفوعة','cancelled':'ملغية','pending_cancel':'بانتظار الإلغاء'};
+const PL={'cash':'💵 Cash','card':'💳 Card','link':'🔗 Link'};
+
+// === AUTH ===
+async function doLogin(){
+const un=document.getElementById('lUser').value.trim(),pw=document.getElementById('lPass').value;
+if(!un||!pw)return;
+const{data,error}=await db.from('employees').select('*').eq('username',un).eq('password',pw).single();
+if(error||!data){const e=document.getElementById('lErr');e.textContent='اسم المستخدم أو الرقم السري غير صحيح';e.classList.remove('hid');return}
+U=data;enter();
+}
+
+function logout(){U=null;document.getElementById('app').classList.add('hid');document.getElementById('loginScreen').classList.remove('hid')}
+
+function enter(){
+document.getElementById('loginScreen').classList.add('hid');
+document.getElementById('app').classList.remove('hid');
+document.getElementById('sN').textContent=U.name;
+document.getElementById('sR').textContent=RL[U.role]||U.job;
+document.getElementById('tD').textContent=new Date().toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'});
+bNav();nav('home');
+}
+
+// === NAV ===
+function bNav(){
+const items=[],r=U.role;
+if(r!=='worker'){
+items.push({id:'home',l:'الرئيسية',c:'var(--navy)'});
+if(r==='callcenter'||r==='admin')items.push({id:'booking',l:'حجز المواعيد',c:'var(--grn)'});
+items.push({id:'invoices',l:'الفواتير',c:'var(--ylw)'});
+items.push({id:'archive',l:'الأرشيف',c:'var(--gry)'});
+items.push({id:'workers',l:'حالة العمال',c:'var(--red)'});
+}
+if(r==='admin')items.push({id:'employees',l:'إدارة الموظفين',c:'var(--navy)'});
+if(r==='worker'){items.push({id:'home',l:'الرئيسية',c:'var(--navy)'});items.push({id:'myinv',l:'فواتيري',c:'var(--ylw)'});}
+document.getElementById('sNav').innerHTML=items.map(i=>`<div class="ni${i.id==='home'?' act':''}" data-p="${i.id}" onclick="nav('${i.id}')"><div class="nd" style="background:${i.c}"></div><span>${i.l}</span></div>`).join('');
+}
+
+async function nav(p){
+pg=p;document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('act',n.dataset.p===p));
+const T={'home':'الرئيسية','booking':'حجز المواعيد','invoices':'الفواتير','archive':'الأرشيف','workers':'حالة العمال','employees':'إدارة الموظفين','myinv':'فواتيري'};
+document.getElementById('pT').textContent=T[p]||'';
+const c=document.getElementById('pC');
+c.innerHTML='<div class="ld">جاري التحميل...</div>';
+switch(p){
+case'home':await rHome(c);break;case'booking':await rBook(c);break;
+case'invoices':await rInv(c);break;case'archive':await rArch(c);break;
+case'workers':await rWork(c);break;case'employees':await rEmp(c);break;
+case'myinv':await rMyInv(c);break;
+}
+}
+
+// === HOME ===
+async function rHome(c){
+if(U.role==='worker'){await rWHome(c);return}
+const today=new Date().toISOString().split('T')[0];
+const{data:inv}=await db.from('invoices').select('*').eq('invoice_date',today);
+const list=inv||[];
+const paid=list.filter(i=>i.status==='paid'),unpaid=list.filter(i=>i.status==='unpaid'),canc=list.filter(i=>i.status==='cancelled');
+const rev=paid.reduce((s,i)=>s+(+i.total),0);
+const{data:notifs}=await db.from('notifications').select('*').eq('is_read',false).order('created_at',{ascending:false}).limit(10);
+const myN=(notifs||[]).filter(n=>n.for_roles&&n.for_roles.includes(U.role));
+let al=myN.map(n=>`<div class="al al-${n.type}">${n.type==='red'?'🔴':n.type==='yellow'?'🟡':'🟢'} ${n.message}</div>`).join('');
+c.innerHTML=`${al}
+<div class="sg">
+<div class="st st-n"><h3>${list.length}</h3><p>فواتير اليوم</p></div>
+<div class="st st-g"><h3>${paid.length}</h3><p>مدفوعة</p></div>
+<div class="st st-r"><h3>${unpaid.length+canc.length}</h3><p>غير مدفوعة / ملغية</p></div>
+<div class="st st-y"><h3>${rev} KD</h3><p>إيرادات اليوم</p></div>
+</div>
+<div class="cd"><div class="ch"><span class="ct-t">فواتير اليوم</span></div>
+<table><thead><tr><th>رقم</th><th>المنطقة</th><th>المبلغ</th><th>الحالة</th><th>العامل</th></tr></thead>
+<tbody>${list.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td style="font-weight:600">#${i.invoice_num}</td><td>${i.area}</td><td>${i.total} KD</td><td><span class="bdg b-${i.status[0]}">${SL[i.status]||i.status}</span></td><td>${i.worker_name}</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--gry);padding:24px">لا توجد فواتير اليوم</td></tr>'}</tbody></table></div>`;
+}
+
+async function rWHome(c){
+const{data:orders}=await db.from('orders').select('*').eq('worker_name',U.name).eq('status','active');
+const today=new Date().toISOString().split('T')[0];
+const{data:inv}=await db.from('invoices').select('*').eq('worker_name',U.name).eq('invoice_date',today);
+const ol=orders||[],il=inv||[];
+c.innerHTML=`
+<div class="cd"><div class="ch"><span class="ct-t">العناوين المرسلة لك</span></div>
+${ol.length?ol.map(o=>`<div style="padding:12px;border:1px solid var(--brd);border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+<div><div style="font-weight:600;font-size:13px">📍 ${o.area} - ${o.address||''}</div><div style="font-size:12px;color:var(--gry);margin-top:3px">📱 ${o.phone}</div></div>
+<div style="display:flex;gap:6px">${o.location_url?`<a href="${o.location_url}" target="_blank" class="btn bs bo">📌 الموقع</a>`:''}<button class="btn bs bp" onclick="oNewInv('${o.phone}','${o.area}')">إنشاء فاتورة</button></div></div>`).join(''):'<p style="text-align:center;color:var(--gry);padding:16px">لا توجد عناوين جديدة</p>'}</div>
+<div class="cd"><div class="ch"><span class="ct-t">فواتيري اليوم</span><button class="btn bs bp" onclick="oNewInv()">+ فاتورة جديدة</button></div>
+${il.length?`<table><thead><tr><th>رقم</th><th>المنطقة</th><th>المبلغ</th><th>الحالة</th></tr></thead><tbody>
+${il.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td>#${i.invoice_num}</td><td>${i.area}</td><td>${i.total} KD</td><td><span class="bdg b-${i.status[0]}">${SL[i.status]||i.status}</span></td></tr>`).join('')}</tbody></table>`:'<p style="text-align:center;color:var(--gry);padding:16px">لا توجد فواتير</p>'}</div>
+<div style="margin-top:12px"><label style="font-size:13px;font-weight:600;color:var(--navy)">حالتك:</label>
+<div style="display:flex;gap:8px;margin-top:6px">
+<button class="btn bs ${U.status==='available'?'bg':'bo'}" onclick="setS('available')">✅ متاح</button>
+<button class="btn bs ${U.status==='busy'?'br':'bo'}" onclick="setS('busy')">🔴 مشغول</button></div></div>`;
+}
+
+async function setS(s){await db.from('employees').update({status:s}).eq('id',U.id);U.status=s;nav('home')}
+
+// === BOOKING ===
+async function rBook(c){
+const{data:workers}=await db.from('employees').select('*').eq('role','worker');
+const{data:orders}=await db.from('orders').select('*').eq('status','active').order('created_at',{ascending:false});
+const wl=workers||[],ol=orders||[];
+c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">إضافة حجز جديد</span></div>
+<div class="fr"><label>رقم الهاتف</label><input type="tel" id="bP"></div>
+<div class="fr"><label>المنطقة</label><input type="text" id="bA"></div>
+<div class="fr"><label>العنوان (اختياري)</label><input type="text" id="bAd"></div>
+<div class="fr"><label>رابط الموقع</label><input type="url" id="bL" placeholder="رابط Google Maps"></div>
+<div class="fr"><label>التاريخ</label><input type="date" id="bD" value="${new Date().toISOString().split('T')[0]}"></div>
+<div class="fr"><label>تعيين عامل</label><select id="bW">${wl.map(w=>`<option value="${w.name}">${w.name} (${w.job}) ${w.status==='available'?'✅':'🔴'}</option>`).join('')}</select></div>
+<button class="btn bp" onclick="saveBk()">حفظ الحجز</button></div>
+<div class="cd"><div class="ch"><span class="ct-t">الحجوزات الحالية</span></div>
+<table><thead><tr><th>الهاتف</th><th>المنطقة</th><th>العامل</th><th>الموقع</th></tr></thead>
+<tbody>${ol.map(o=>`<tr><td>${o.phone}</td><td>${o.area}</td><td>${o.worker_name}</td><td>${o.location_url?`<a href="${o.location_url}" target="_blank">📌</a>`:'-'}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;color:var(--gry);padding:20px">لا توجد حجوزات</td></tr>'}</tbody></table></div>`;
+}
+
+async function saveBk(){
+const o={phone:document.getElementById('bP').value,area:document.getElementById('bA').value,address:document.getElementById('bAd').value,location_url:document.getElementById('bL').value,worker_name:document.getElementById('bW').value,order_date:document.getElementById('bD').value,status:'active',created_by:U.name};
+if(!o.phone||!o.area){alert('أدخل الهاتف والمنطقة');return}
+await db.from('orders').insert(o);nav('booking');
+}
+
+// === INVOICES ===
+async function rInv(c){
+const today=new Date().toISOString().split('T')[0];
+const{data}=await db.from('invoices').select('*').eq('invoice_date',today).order('created_at',{ascending:false});
+const list=data||[];
+c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">فواتير اليوم</span></div>
+<table><thead><tr><th>رقم</th><th>المنطقة</th><th>الهاتف</th><th>المبلغ</th><th>الدفع</th><th>الحالة</th><th>العامل</th></tr></thead>
+<tbody>${list.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td style="font-weight:600">#${i.invoice_num}</td><td>${i.area}</td><td>${i.phone}</td><td>${i.total} KD</td><td>${PL[i.payment]||i.payment}</td><td><span class="bdg b-${i.status[0]}">${SL[i.status]||i.status}</span></td><td>${i.worker_name}</td></tr>`).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--gry);padding:24px">لا توجد فواتير</td></tr>'}</tbody></table></div>`;
+}
+
+async function rMyInv(c){
+const{data}=await db.from('invoices').select('*').eq('worker_name',U.name).order('created_at',{ascending:false});
+const list=data||[];
+c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">جميع فواتيري</span><button class="btn bs bp" onclick="oNewInv()">+ فاتورة جديدة</button></div>
+<table><thead><tr><th>رقم</th><th>المنطقة</th><th>المبلغ</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+<tbody>${list.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td>#${i.invoice_num}</td><td>${i.area}</td><td>${i.total} KD</td><td><span class="bdg b-${i.status[0]}">${SL[i.status]||i.status}</span></td><td>${i.invoice_date}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+// === ARCHIVE ===
+async function rArch(c){
+const{data}=await db.from('invoices').select('*').in('status',['paid','cancelled']).order('invoice_date',{ascending:false});
+const list=data||[],grp={};
+list.forEach(i=>{if(!grp[i.invoice_date])grp[i.invoice_date]=[];grp[i.invoice_date].push(i)});
+const dates=Object.keys(grp).sort().reverse();
+let xb=U.role==='admin'?'<button class="btn bs bg" onclick="xExport()">📊 تصدير Excel</button>':'';
+c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">الأرشيف</span>${xb}</div>
+${dates.map(d=>`<div class="dg"><div class="dh"><span>📅 ${d}</span><span>${grp[d].length} فاتورة</span></div>
+<div class="dl">${grp[d].map(i=>`<div class="dr" onclick="vInv(${i.id})"><span style="font-weight:600">#${i.invoice_num}</span><span>${i.area}</span><span>${i.total} KD</span>
+<span class="bdg b-${i.status[0]}" style="${i.status==='cancelled'?'color:var(--red)':''}">${SL[i.status]||i.status}</span></div>`).join('')}</div></div>`).join('')||'<p style="text-align:center;color:var(--gry);padding:24px">لا يوجد أرشيف</p>'}</div>`;
+}
+
+function xExport(){
+let csv='\uFEFF"رقم","المنطقة","الهاتف","المبلغ","الدفع","الحالة","العامل","التاريخ"\n';
+document.querySelectorAll('.dr').forEach(r=>{
+const cells=r.querySelectorAll('span');
+if(cells.length>=4)csv+=`"${cells[0].textContent}","${cells[1].textContent}","","${cells[2].textContent}","","${cells[3].textContent}","",""\n`;
+});
+const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='masayel_archive.csv';a.click();
+}
+
+// === WORKERS ===
+async function rWork(c){
+const{data}=await db.from('employees').select('*').eq('role','worker');
+const list=data||[];
+c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">حالة العمال</span></div>
+${list.map(w=>`<div class="wr"><div class="wa">${w.name.charAt(0)}</div>
+<div class="wi"><div class="wn">${w.name}</div><div class="wj">${w.job||''} ${w.worker_group?'- '+w.worker_group:''}</div></div>
+<span class="bdg b-${w.status==='available'?'a':'b'}">${w.status==='available'?'✅ متاح':'🔴 مشغول'}</span></div>`).join('')}</div>`;
+}
+
+// === EMPLOYEES ===
+async function rEmp(c){
+const{data}=await db.from('employees').select('*').order('created_at');
+const list=(data||[]).filter(u=>u.role!=='admin');
+c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">إدارة الموظفين</span><button class="btn bs bp" onclick="oAddEmp()">+ إضافة موظف</button></div>
+<table><thead><tr><th>الاسم</th><th>المستخدم</th><th>الدور</th><th>المهنة</th><th>الرابط</th><th>الإجراء</th></tr></thead>
+<tbody>${list.map(u=>{const lnk=window.location.origin+window.location.pathname+'?u='+u.username;return`<tr><td style="font-weight:600">${u.name}</td><td>${u.username}</td><td><span class="bdg" style="background:#dbeafe;color:#1e40af">${RL[u.role]||u.role}</span></td><td>${u.job||'-'}</td>
+<td><button class="btn bs bo" onclick="copyLink('${lnk}')" style="font-size:11px">📋 نسخ الرابط</button></td>
+<td><button class="btn bs bo" style="color:var(--red)" onclick="delEmp(${u.id})">حذف</button></td></tr>`}).join('')}</tbody></table></div>`;
+}
+
+function oAddEmp(){
+oM('إضافة موظف جديد',`
+<div class="fr"><label>الاسم الكامل</label><input id="eN"></div>
+<div class="fr"><label>اسم المستخدم</label><input id="eU"></div>
+<div class="fr"><label>الرقم السري</label><input id="eP"></div>
+<div class="fr"><label>الدور</label><select id="eR"><option value="manager">مدير</option><option value="callcenter">كول سنتر</option><option value="worker">عامل</option></select></div>
+<div class="fr"><label>المهنة</label><input id="eJ" placeholder="مثال: عامل غسيل"></div>
+<div class="fr"><label>المجموعة</label><select id="eG"><option value="">بدون</option><option value="مندوب">مندوب</option><option value="غسيل">غسيل</option></select></div>
+<button class="btn bp" onclick="saveEmp()">إنشاء</button>
+<div id="empLink" class="hid" style="margin-top:14px;padding:12px;background:var(--grn-bg);border-radius:8px"></div>`);
+}
+
+async function saveEmp(){
+const emp={name:document.getElementById('eN').value,username:document.getElementById('eU').value,password:document.getElementById('eP').value,role:document.getElementById('eR').value,job:document.getElementById('eJ').value,worker_group:document.getElementById('eG').value,status:'available'};
+if(!emp.name||!emp.username||!emp.password){alert('أكمل الحقول');return}
+const{data,error}=await db.from('employees').insert(emp).select().single();
+if(error){alert('خطأ: '+error.message);return}
+const link=window.location.origin+window.location.pathname+'?u='+emp.username;
+const el=document.getElementById('empLink');
+el.innerHTML=`<p style="font-weight:600;color:var(--grn-d);margin-bottom:6px">✅ تم الإنشاء!</p><p style="font-size:12px">رابط الموظف:</p><input value="${link}" readonly style="width:100%;padding:8px;margin-top:4px;border:1px solid var(--brd);border-radius:6px;font-size:12px" onclick="this.select()">`;
+el.classList.remove('hid');
+}
+
+async function delEmp(id){if(confirm('حذف هذا الموظف؟')){await db.from('employees').delete().eq('id',id);nav('employees')}}
+
+// === INVOICE BUILDER ===
+let IS={cat:null,svcs:[],phone:'',area:'',pay:'cash'};
+
+function oNewInv(ph,ar){IS={cat:null,svcs:[],phone:ph||'',area:ar||'',pay:'cash'};invStep1()}
+
+function invStep1(){
+oM('إنشاء فاتورة جديدة',`
+<div class="fr"><label>رقم الهاتف</label><input type="tel" id="iP" value="${IS.phone}"></div>
+<div class="fr"><label>المنطقة</label><input id="iA" value="${IS.area}"></div>
+<p style="font-size:13px;font-weight:600;color:var(--navy);margin:14px 0 8px">اختر الخدمة:</p>
+<div class="ic">
+<div class="icc" onclick="selCat('سجاد')"><span>🧶</span>سجاد</div>
+<div class="icc" onclick="selCat('مفروشات')"><span>🛋️</span>مفروشات</div>
+<div class="icc" onclick="selCat('تنظيف شامل')"><span>🏠</span>تنظيف شامل</div>
+</div>
+${IS.svcs.length?`<div style="border-top:1px solid var(--brd);padding-top:12px">
+<p style="font-size:13px;font-weight:600;margin-bottom:6px">الخدمات المضافة:</p>
+${IS.svcs.map(s=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--brd);font-size:13px"><span>${s.cat} - ${s.sub}</span><span>${s.price} KD</span></div>`).join('')}
+<div class="it"><span class="tl">الإجمالي</span><span class="ta">${IS.svcs.reduce((s,x)=>s+x.price,0)} KD</span></div>
+<div class="fr" style="margin-top:12px"><label>طريقة الدفع</label><select id="iPay"><option value="cash">Cash 💵</option><option value="card">Card 💳</option><option value="link">Link 🔗</option></select></div>
+<button class="btn bg" onclick="finalInv()" style="width:100%;margin-top:8px">✅ اعتماد الفاتورة</button></div>`:''}`);
+}
+
+function selCat(cat){IS.cat=cat;IS.phone=document.getElementById('iP')?.value||IS.phone;IS.area=document.getElementById('iA')?.value||IS.area;
+if(cat==='سجاد')carpSubs();else if(cat==='مفروشات')furnSubs();else cleanSubs()}
+
+function carpSubs(){oM('سجاد',`<div class="so" onclick="carpCalc('سجاد عادي',1)"><span style="font-weight:600">سجاد عادي</span><span style="color:var(--gry);font-size:13px">1 KD/متر</span></div>
+<div class="so" onclick="carpCalc('سجاد يدوي',5)"><span style="font-weight:600">سجاد يدوي</span><span style="color:var(--gry);font-size:13px">5 KD/متر</span></div>
+<div class="so" onclick="carpCust()"><span style="font-weight:600">أخرى</span><span style="color:var(--gry);font-size:13px">سعر يدوي</span></div>
+<button class="btn bo" onclick="invStep1()" style="width:100%;margin-top:8px">← رجوع</button>`)}
+
+function carpCalc(t,p){oM('سجاد - '+t,`<p style="font-size:12px;color:var(--gry);margin-bottom:12px">${p} KD/متر²</p>
+<div class="cr"><div class="fr"><label>الطول</label><input type="number" id="cL" min=".5" step=".5" value="1" onchange="cCalc(${p})"></div><div class="fr"><label>العرض</label><input type="number" id="cW" min=".5" step=".5" value="1" onchange="cCalc(${p})"></div></div>
+<div class="fr"><label>العدد</label><input type="number" id="cQ" min="1" value="1" onchange="cCalc(${p})"></div>
+<div class="it"><span class="tl">السعر</span><span class="ta" id="cT">${p} KD</span></div>
+<button class="btn bp" onclick="addCarp('${t}',${p})" style="width:100%;margin-top:12px">إضافة</button><button class="btn bo" onclick="carpSubs()" style="width:100%;margin-top:6px">← رجوع</button>`)}
+
+function cCalc(p){const l=+(document.getElementById('cL').value)||1,w=+(document.getElementById('cW').value)||1,q=+(document.getElementById('cQ').value)||1;document.getElementById('cT').textContent=Math.round(l*w*p*q)+' KD'}
+
+function addCarp(t,p){const l=+(document.getElementById('cL').value)||1,w=+(document.getElementById('cW').value)||1,q=+(document.getElementById('cQ').value)||1;IS.svcs.push({cat:'سجاد',sub:t,l,w,qty:q,price:Math.round(l*w*p*q)});invStep1()}
+
+function carpCust(){oM('سجاد - أخرى',`<div class="fr"><label>النوع</label><input id="ccN"></div><div class="fr"><label>سعر المتر</label><input type="number" id="ccP" value="1"></div>
+<div class="cr"><div class="fr"><label>الطول</label><input type="number" id="ccL" value="1"></div><div class="fr"><label>العرض</label><input type="number" id="ccW" value="1"></div></div>
+<div class="fr"><label>العدد</label><input type="number" id="ccQ" value="1"></div>
+<button class="btn bp" onclick="addCarpC()" style="width:100%;margin-top:12px">إضافة</button><button class="btn bo" onclick="carpSubs()" style="width:100%;margin-top:6px">← رجوع</button>`)}
+
+function addCarpC(){const n=document.getElementById('ccN').value||'أخرى',p=+(document.getElementById('ccP').value)||1,l=+(document.getElementById('ccL').value)||1,w=+(document.getElementById('ccW').value)||1,q=+(document.getElementById('ccQ').value)||1;IS.svcs.push({cat:'سجاد',sub:n,l,w,qty:q,price:Math.round(l*w*p*q)});invStep1()}
+
+function furnSubs(){oM('مفروشات',`<div class="so" onclick="furnM('كنب')"><span style="font-weight:600">كنب</span><span style="color:var(--gry);font-size:13px">1 KD/متر</span></div>
+<div class="so" onclick="mattSubs()"><span style="font-weight:600">ماترس</span><span style="color:var(--gry);font-size:13px">حسب الحجم</span></div>
+<div class="so" onclick="curtain()"><span style="font-weight:600">ستاير</span><span style="color:var(--gry);font-size:13px">1 KD/متر</span></div>
+<div class="so" onclick="furnCarp()"><span style="font-weight:600">سجاد</span><span style="color:var(--gry);font-size:13px">قياس يدوي</span></div>
+<div class="so" onclick="furnOth()"><span style="font-weight:600">أخرى</span><span style="color:var(--gry);font-size:13px">يدوي</span></div>
+<button class="btn bo" onclick="invStep1()" style="width:100%;margin-top:8px">← رجوع</button>`)}
+
+function furnM(t){oM('مفروشات - '+t,`<p style="font-size:12px;color:var(--gry);margin-bottom:10px">1 KD/متر</p>
+<div class="fr"><label>عدد الأمتار</label><input type="number" id="fm" min="1" value="1"></div>
+<button class="btn bp" onclick="addFM('${t}')" style="width:100%;margin-top:10px">إضافة</button><button class="btn bo" onclick="furnSubs()" style="width:100%;margin-top:6px">← رجوع</button>`)}
+function addFM(t){const m=+(document.getElementById('fm').value)||1;IS.svcs.push({cat:'مفروشات',sub:t,qty:1,price:m});invStep1()}
+
+function mattSubs(){const ts=[{n:'سنقل',p:8},{n:'نفر ونص',p:12},{n:'نفرين',p:15},{n:'سنقل وجهين',p:16},{n:'نفر ونص وجهين',p:24},{n:'نفرين وجهين',p:30}];
+oM('ماترس',`${ts.map(t=>`<div class="so" onclick="mattQ('${t.n}',${t.p})"><span style="font-weight:600">${t.n}</span><span style="color:var(--gry);font-size:13px">${t.p} KD</span></div>`).join('')}
+<button class="btn bo" onclick="furnSubs()" style="width:100%;margin-top:8px">← رجوع</button>`)}
+
+function mattQ(t,p){oM('ماترس - '+t,`<div class="fr"><label>العدد</label><input type="number" id="mQ" min="1" value="1" onchange="document.getElementById('mT').textContent=(+(this.value)||1)*${p}+' KD'"></div>
+<div class="it"><span class="tl">الإجمالي</span><span class="ta" id="mT">${p} KD</span></div>
+<button class="btn bp" onclick="addMatt('${t}',${p})" style="width:100%;margin-top:10px">إضافة</button><button class="btn bo" onclick="mattSubs()" style="width:100%;margin-top:6px">← رجوع</button>`)}
+function addMatt(t,p){const q=+(document.getElementById('mQ').value)||1;IS.svcs.push({cat:'مفروشات',sub:'ماترس '+t,qty:q,price:p*q});invStep1()}
+
+function curtain(){oM('ستاير',`<div class="fr"><label>عدد الأمتار</label><input type="number" id="cuM" min="1" value="1"></div>
+<button class="btn bp" onclick="addCurt()" style="width:100%;margin-top:10px">إضافة</button><button class="btn bo" onclick="furnSubs()" style="width:100%;margin-top:6px">← رجوع</button>`)}
+function addCurt(){const m=+(document.getElementById('cuM').value)||1;IS.svcs.push({cat:'مفروشات',sub:'ستاير',qty:1,price:m});invStep1()}
+
+function furnCarp(){oM('مفروشات - سجاد',`<div class="cr"><div class="fr"><label>الطول</label><input type="number" id="fcL" value="1"></div><div class="fr"><label>العرض</label><input type="number" id="fcW" value="1"></div></div>
+<div class="fr"><label>العدد</label><input type="number" id="fcQ" value="1"></div><div class="fr"><label>السعر</label><input type="number" id="fcP" value="1"></div>
+<button class="btn bp" onclick="addFC()" style="width:100%;margin-top:10px">إضافة</button><button class="btn bo" onclick="furnSubs()" style="width:100%;margin-top:6px">← رجوع</button>`)}
+function addFC(){const q=+(document.getElementById('fcQ').value)||1,p=+(document.getElementById('fcP').value)||1;IS.svcs.push({cat:'مفروشات',sub:'سجاد',qty:q,price:p*q});invStep1()}
+
+function furnOth(){oM('مفروشات - أخرى',`<div class="fr"><label>النوع</label><input id="foN"></div><div class="fr"><label>السعر</label><input type="number" id="foP" value="1"></div>
+<button class="btn bp" onclick="addFO()" style="width:100%;margin-top:10px">إضافة</button><button class="btn bo" onclick="furnSubs()" style="width:100%;margin-top:6px">← رجوع</button>`)}
+function addFO(){IS.svcs.push({cat:'مفروشات',sub:document.getElementById('foN').value||'أخرى',qty:1,price:+(document.getElementById('foP').value)||0});invStep1()}
+
+function cleanSubs(){oM('تنظيف شامل',`<div class="so" onclick="cleanC('بيت',1)"><span style="font-weight:600">بيت</span></div>
+<div class="so" onclick="cleanC('دور',1)"><span style="font-weight:600">دور</span></div>
+<div class="so" onclick="cleanC('شقة',0)"><span style="font-weight:600">شقة</span></div>
+<div class="so" onclick="cleanC('مطبخ',0)"><span style="font-weight:600">مطبخ</span></div>
+<div class="so" onclick="cleanC('أخرى',0)"><span style="font-weight:600">أخرى</span></div>
+<button class="btn bo" onclick="invStep1()" style="width:100%;margin-top:8px">← رجوع</button>`)}
+
+function cleanC(t,hf){oM('تنظيف شامل - '+t,`${hf?'<div class="fr"><label>عدد الأدوار</label><input type="number" id="clF" min="1" value="1"></div>':''}
+<div class="fr"><label>السعر</label><input type="number" id="clP" value="1"></div>
+<button class="btn bp" onclick="addCl('${t}',${hf})" style="width:100%;margin-top:10px">إضافة</button><button class="btn bo" onclick="cleanSubs()" style="width:100%;margin-top:6px">← رجوع</button>`)}
+function addCl(t,hf){const p=+(document.getElementById('clP').value)||0;IS.svcs.push({cat:'تنظيف شامل',sub:t,qty:1,price:p});invStep1()}
+
+async function finalInv(){
+IS.phone=document.getElementById('iP')?.value||IS.phone;
+IS.area=document.getElementById('iA')?.value||IS.area;
+IS.pay=document.getElementById('iPay')?.value||'cash';
+if(!IS.phone||!IS.area){alert('أدخل الهاتف والمنطقة');return}
+if(!IS.svcs.length){alert('أضف خدمة');return}
+// get next invoice number
+const{data:stg}=await db.from('settings').select('value').eq('key','next_invoice_num').single();
+const num=stg?parseInt(stg.value):1;
+const numStr=String(num).padStart(4,'0');
+await db.from('settings').update({value:String(num+1)}).eq('key','next_invoice_num');
+const hasCust=IS.svcs.some(s=>s.cat==='سجاد');
+const total=IS.svcs.reduce((s,x)=>s+x.price,0);
+const{data:inv,error}=await db.from('invoices').insert({invoice_num:numStr,phone:IS.phone,area:IS.area,total,payment:IS.pay,status:'unpaid',worker_name:U.name,invoice_date:new Date().toISOString().split('T')[0],has_custody:hasCust,custody_current_worker:hasCust?U.name:''}).select().single();
+if(error){alert('خطأ: '+error.message);return}
+// save services
+for(const s of IS.svcs){
+await db.from('invoice_services').insert({invoice_id:inv.id,category:s.cat,sub_type:s.sub,carpet_length:s.l||0,carpet_width:s.w||0,qty:s.qty||1,price:s.price});
+}
+if(hasCust){await db.from('custody_steps').insert({invoice_id:inv.id,worker_name:U.name,action:'استلام',done:false,deadline:new Date(Date.now()+48*3600000).toISOString(),step_order:1})}
+clM();nav(U.role==='worker'?'home':pg);
+}
+
+// === VIEW INVOICE ===
+async function vInv(id){
+const{data:inv}=await db.from('invoices').select('*').eq('id',id).single();
+if(!inv)return;
+const{data:svcs}=await db.from('invoice_services').select('*').eq('invoice_id',id);
+const{data:steps}=await db.from('custody_steps').select('*').eq('invoice_id',id).order('step_order');
+let custH='';
+if(inv.has_custody&&steps&&steps.length){
+const currentStep=steps.find(s=>!s.done);
+custH=`<div style="border-top:1px solid var(--brd);padding-top:12px;margin-top:12px"><p style="font-weight:700;color:var(--navy);margin-bottom:8px">📦 نظام العهدة</p>
+<p style="font-size:12px;color:var(--gry);margin-bottom:8px">الفاتورة حالياً عند: <strong style="color:var(--navy)">${inv.custody_current_worker||'—'}</strong></p>
+${steps.map(s=>`<div style="padding:8px 12px;border-radius:6px;margin-bottom:4px;font-size:13px;background:${s.done?'var(--grn-bg)':'var(--ylw-bg)'}">
+<span style="font-weight:600">${s.worker_name}</span> — ${s.action} <span style="float:left">${s.done?'✅ تم':'⏳ بانتظار'}</span></div>`).join('')}
+${U.role==='worker'&&inv.custody_current_worker===U.name&&inv.status==='unpaid'?`<div style="display:flex;gap:6px;margin-top:10px">
+<button class="btn bs bg" onclick="custDone(${id})">✅ تم الاستلام</button>
+<button class="btn bs bp" onclick="custTrans(${id})">🔄 تسليم للموظف التالي</button>
+<button class="btn bs bo" style="color:var(--grn-d)" onclick="custFinish(${id})">🏁 منجز - توصيل للعميل</button>
+</div>`:''}</div>`;
+}
+let actH='';
+if(U.role==='worker'&&inv.worker_name===U.name&&inv.status==='unpaid'){
+actH=`<div style="display:flex;gap:6px;margin-top:12px"><button class="btn bg" onclick="payInv(${id})">✅ مدفوعة</button><button class="btn bo" style="color:var(--red)" onclick="reqCanc(${id})">❌ طلب إلغاء</button></div>`;
+}
+if((U.role==='manager'||U.role==='admin')&&inv.status==='pending_cancel'){
+actH=`<div style="margin-top:12px"><div class="fr"><label>سبب الإلغاء</label><input id="cRsn"></div>
+<div style="display:flex;gap:6px"><button class="btn br" onclick="appCanc(${id})">اعتماد الإلغاء</button><button class="btn bo" onclick="rejCanc(${id})">رفض</button></div></div>`;
+}
+if(U.role==='admin'){actH+=`<button class="btn bs bo" style="color:var(--red);margin-top:8px" onclick="delInv(${id})">🗑️ حذف</button>`}
+const sl=svcs||[];
+oM('فاتورة #'+inv.invoice_num,`
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+<div><span style="font-size:11px;color:var(--gry)">رقم الفاتورة</span><div style="font-weight:700">#${inv.invoice_num}</div></div>
+<div><span style="font-size:11px;color:var(--gry)">التاريخ</span><div style="font-weight:700">${inv.invoice_date}</div></div>
+<div><span style="font-size:11px;color:var(--gry)">الهاتف</span><div style="font-weight:700">${inv.phone}</div></div>
+<div><span style="font-size:11px;color:var(--gry)">المنطقة</span><div style="font-weight:700">${inv.area}</div></div>
+<div><span style="font-size:11px;color:var(--gry)">العامل</span><div style="font-weight:700">${inv.worker_name}</div></div>
+<div><span style="font-size:11px;color:var(--gry)">الدفع</span><div style="font-weight:700">${PL[inv.payment]||inv.payment}</div></div>
+</div>
+<div style="border-top:1px solid var(--brd);padding-top:12px"><p style="font-weight:700;color:var(--navy);margin-bottom:8px">الخدمات:</p>
+${sl.map(s=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--brd);font-size:13px"><span>${s.category} - ${s.sub_type}${s.qty>1?' (×'+s.qty+')':''}</span><span style="font-weight:600">${s.price} KD</span></div>`).join('')}</div>
+<div class="it"><span class="tl">الإجمالي</span><span class="ta">${inv.total} KD</span></div>
+<div style="margin-top:8px"><span class="bdg b-${inv.status[0]}" style="font-size:13px;padding:5px 14px">${SL[inv.status]||inv.status}</span></div>
+${inv.cancelled_by?`<div class="al al-r" style="margin-top:8px">تم الإلغاء من قبل ${inv.cancelled_by}: ${inv.cancel_reason}</div>`:''}
+${custH}${actH}`);
+}
+
+async function payInv(id){await db.from('invoices').update({status:'paid'}).eq('id',id);clM();nav(pg)}
+async function reqCanc(id){
+const{data:inv}=await db.from('invoices').select('invoice_num').eq('id',id).single();
+await db.from('invoices').update({status:'pending_cancel'}).eq('id',id);
+await db.from('notifications').insert({message:'طلب إلغاء فاتورة #'+(inv?.invoice_num||'')+' من '+U.name,type:'yellow',for_roles:['admin','manager','callcenter']});
+clM();nav(pg);
+}
+async function appCanc(id){const r=document.getElementById('cRsn')?.value;if(!r){alert('اكتب السبب');return}
+await db.from('invoices').update({status:'cancelled',cancelled_by:U.name,cancel_reason:r}).eq('id',id);clM();nav(pg)}
+async function rejCanc(id){await db.from('invoices').update({status:'unpaid'}).eq('id',id);clM();nav(pg)}
+async function delInv(id){if(U.role!=='admin')return;if(confirm('حذف نهائي؟')){await db.from('invoices').delete().eq('id',id);clM();nav(pg)}}
+
+async function custDone(id){
+const{data:inv}=await db.from('invoices').select('*').eq('id',id).single();
+await db.from('custody_steps').update({done:true}).eq('invoice_id',id).eq('worker_name',U.name).eq('done',false);
+// notification
+await db.from('notifications').insert({message:'📦 تم الاستلام - فاتورة #'+(inv?.invoice_num||'')+' عند '+U.name+' ('+U.worker_group+')',type:'green',for_roles:['admin','manager','callcenter']});
+clM();vInv(id);
+}
+async function custTrans(id){
+// مندوب يشوف قائمة الغسيل — غسيل يشوف قائمة المناديب
+const targetGroup=U.worker_group==='مندوب'?'غسيل':'مندوب';
+const{data:workers}=await db.from('employees').select('*').eq('role','worker').eq('worker_group',targetGroup);
+const wl=workers||[];
+if(!wl.length){alert('لا يوجد موظفين في مجموعة '+targetGroup);return}
+oM('طلب تسليم العهدة',`
+<p style="font-size:13px;color:var(--gry);margin-bottom:12px">تسليم إلى مجموعة: <strong>${targetGroup}</strong></p>
+<div class="fr"><label>اختر الموظف</label><select id="trTo">${wl.map(w=>`<option value="${w.name}">${w.name} (${w.job}) ${w.status==='available'?'✅':'🔴'}</option>`).join('')}</select></div>
+<button class="btn bp" onclick="doTrans(${id})" style="width:100%;margin-top:8px">طلب الموافقة</button>`);
+}
+async function doTrans(id){
+const to=document.getElementById('trTo').value;
+const{data:inv}=await db.from('invoices').select('*').eq('id',id).single();
+await db.from('custody_steps').update({done:true}).eq('invoice_id',id).eq('worker_name',U.name).eq('done',false);
+const{data:maxS}=await db.from('custody_steps').select('step_order').eq('invoice_id',id).order('step_order',{ascending:false}).limit(1).single();
+const nextO=(maxS?.step_order||0)+1;
+const{data:toEmp}=await db.from('employees').select('worker_group').eq('name',to).single();
+const action=toEmp?.worker_group==='غسيل'?'استلام للغسيل':'استلام للتوصيل';
+await db.from('custody_steps').insert({invoice_id:id,worker_name:to,action:action,done:false,deadline:new Date(Date.now()+48*3600000).toISOString(),step_order:nextO});
+await db.from('invoices').update({custody_current_worker:to}).eq('id',id);
+// notification
+await db.from('notifications').insert({message:'📦 فاتورة #'+(inv?.invoice_num||'')+' تم تسليمها من '+U.name+' إلى '+to,type:'yellow',for_roles:['admin','manager','callcenter']});
+clM();nav(pg);
+}
+
+// === COPY LINK ===
+function copyLink(lnk){navigator.clipboard.writeText(lnk).then(()=>alert('تم نسخ الرابط ✅')).catch(()=>{prompt('انسخ الرابط:',lnk)})}
+
+async function custFinish(id){
+const{data:inv}=await db.from('invoices').select('*').eq('id',id).single();
+await db.from('custody_steps').update({done:true}).eq('invoice_id',id).eq('worker_name',U.name).eq('done',false);
+const{data:maxS}=await db.from('custody_steps').select('step_order').eq('invoice_id',id).order('step_order',{ascending:false}).limit(1).single();
+const nextO=(maxS?.step_order||0)+1;
+await db.from('custody_steps').insert({invoice_id:id,worker_name:U.name,action:'تم التوصيل للعميل',done:true,step_order:nextO});
+await db.from('notifications').insert({message:'✅ فاتورة #'+(inv?.invoice_num||'')+' تم توصيلها للعميل بواسطة '+U.name,type:'green',for_roles:['admin','manager','callcenter']});
+clM();vInv(id);
+}
+
+// === MODAL ===
+function oM(t,b){document.getElementById('mTi').textContent=t;document.getElementById('mBd').innerHTML=b;document.getElementById('mOv').classList.add('sh')}
+function clM(){document.getElementById('mOv').classList.remove('sh')}
+
+// === URL PARAMS (employee links) ===
+async function checkURL(){
+const p=new URLSearchParams(window.location.search);
+const u=p.get('u');
+if(u){
+// Employee link — show only their username
+const{data:emp}=await db.from('employees').select('name,username,role').eq('username',u).single();
+if(emp){
+const icons={'manager':'📋','callcenter':'📞','worker':'🔧'};
+document.getElementById('loginTitle').innerHTML=`<span style="font-size:28px;display:block;margin-bottom:4px">${icons[emp.role]||'👤'}</span><h3 style="font-size:16px;color:var(--navy);font-weight:600">${emp.name}</h3>`;
+document.getElementById('lUser').value=emp.username;
+document.getElementById('lUser').readOnly=true;
+document.getElementById('lUser').style.background='#f1f5f9';
+document.getElementById('lUser').style.fontWeight='600';
+}else{
+document.getElementById('loginTitle').innerHTML='<h3 style="font-size:16px;color:var(--red);font-weight:600">رابط غير صحيح</h3>';
+}
+}
+}
+checkURL();
+</script>
+</body>
+</html>
