@@ -182,7 +182,6 @@ items.push({id:'home',l:'الرئيسية',c:'var(--navy)'});
 if(r==='callcenter'||r==='admin')items.push({id:'booking',l:'حجز المواعيد',c:'var(--grn)'});
 items.push({id:'invoices',l:'الفواتير',c:'var(--ylw)'});
 items.push({id:'archive',l:'الأرشيف',c:'var(--gry)'});
-items.push({id:'workers',l:'حالة العمال',c:'var(--red)'});
 }
 if(r==='admin')items.push({id:'employees',l:'إدارة الموظفين',c:'var(--navy)'});
 if(r==='worker'){items.push({id:'home',l:'الرئيسية',c:'var(--navy)'});items.push({id:'myinv',l:'فواتيري',c:'var(--ylw)'});}
@@ -191,14 +190,14 @@ document.getElementById('sNav').innerHTML=items.map(i=>`<div class="ni${i.id==='
 
 async function nav(p){
 pg=p;document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('act',n.dataset.p===p));
-const T={'home':'الرئيسية','booking':'حجز المواعيد','invoices':'الفواتير','archive':'الأرشيف','workers':'حالة العمال','employees':'إدارة الموظفين','myinv':'فواتيري'};
+const T={'home':'الرئيسية','booking':'حجز المواعيد','invoices':'الفواتير','archive':'الأرشيف','employees':'إدارة الموظفين','myinv':'فواتيري'};
 document.getElementById('pT').textContent=T[p]||'';
 const c=document.getElementById('pC');
 c.innerHTML='<div class="ld">جاري التحميل...</div>';
 switch(p){
 case'home':await rHome(c);break;case'booking':await rBook(c);break;
 case'invoices':await rInv(c);break;case'archive':await rArch(c);break;
-case'workers':await rWork(c);break;case'employees':await rEmp(c);break;
+case'employees':await rEmp(c);break;
 case'myinv':await rMyInv(c);break;
 }
 }
@@ -339,14 +338,13 @@ oM('إضافة موظف جديد',`
 <div class="fr"><label>اسم المستخدم</label><input id="eU"></div>
 <div class="fr"><label>الرقم السري</label><input id="eP"></div>
 <div class="fr"><label>الدور</label><select id="eR"><option value="manager">مدير</option><option value="callcenter">كول سنتر</option><option value="worker">عامل</option></select></div>
-<div class="fr"><label>المهنة</label><input id="eJ" placeholder="مثال: عامل غسيل"></div>
-<div class="fr"><label>المجموعة</label><select id="eG"><option value="">بدون</option><option value="مندوب">مندوب</option><option value="غسيل">غسيل</option></select></div>
+<div class="fr"><label>المجموعة</label><select id="eG"><option value="">بدون</option><option value="مندوب">مندوب</option><option value="شركة">شركة</option></select></div>
 <button class="btn bp" onclick="saveEmp()">إنشاء</button>
 <div id="empLink" class="hid" style="margin-top:14px;padding:12px;background:var(--grn-bg);border-radius:8px"></div>`);
 }
 
 async function saveEmp(){
-const emp={name:document.getElementById('eN').value,username:document.getElementById('eU').value,password:document.getElementById('eP').value,role:document.getElementById('eR').value,job:document.getElementById('eJ').value,worker_group:document.getElementById('eG').value,status:'available'};
+const emp={name:document.getElementById('eN').value,username:document.getElementById('eU').value,password:document.getElementById('eP').value,role:document.getElementById('eR').value,job:'',worker_group:document.getElementById('eG').value,status:'available'};
 if(!emp.name||!emp.username||!emp.password){alert('أكمل الحقول');return}
 const{data,error}=await db.from('employees').insert(emp).select().single();
 if(error){alert('خطأ: '+error.message);return}
@@ -377,7 +375,9 @@ ${IS.svcs.length?`<div style="border-top:1px solid var(--brd);padding-top:12px">
 <p style="font-size:13px;font-weight:600;margin-bottom:6px">الخدمات المضافة:</p>
 ${IS.svcs.map(s=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--brd);font-size:13px"><span>${s.cat} - ${s.sub}</span><span>${s.price} KD</span></div>`).join('')}
 <div class="it"><span class="tl">الإجمالي</span><span class="ta">${IS.svcs.reduce((s,x)=>s+x.price,0)} KD</span></div>
-<div class="fr" style="margin-top:12px"><label>طريقة الدفع</label><select id="iPay"><option value="cash">Cash 💵</option><option value="card">Card 💳</option><option value="link">Link 🔗</option></select></div>
+<div class="fr" style="margin-top:12px"><label>ملاحظة / تقرير</label><textarea id="iNotes" rows="3" placeholder="اكتب ملاحظتك هنا..." style="width:100%;padding:10px;border:1.5px solid var(--brd);border-radius:8px;font-family:inherit;font-size:14px;resize:vertical"></textarea></div>
+<div class="fr"><label>صور (حد أقصى 10)</label><input type="file" id="iPhotos" accept="image/*" multiple onchange="checkPhotos(this)" style="font-size:13px"><p id="photoCount" style="font-size:11px;color:var(--gry);margin-top:4px"></p></div>
+<div class="fr"><label>طريقة الدفع</label><select id="iPay"><option value="cash">Cash 💵</option><option value="card">Card 💳</option><option value="link">Link 🔗</option></select></div>
 <button class="btn bg" onclick="finalInv()" style="width:100%;margin-top:8px">✅ اعتماد الفاتورة</button></div>`:''}`);
 }
 
@@ -452,6 +452,11 @@ function cleanC(t,hf){oM('تنظيف شامل - '+t,`${hf?'<div class="fr"><labe
 <button class="btn bp" onclick="addCl('${t}',${hf})" style="width:100%;margin-top:10px">إضافة</button><button class="btn bo" onclick="cleanSubs()" style="width:100%;margin-top:6px">← رجوع</button>`)}
 function addCl(t,hf){const p=+(document.getElementById('clP').value)||0;IS.svcs.push({cat:'تنظيف شامل',sub:t,qty:1,price:p});invStep1()}
 
+function checkPhotos(input){
+if(input.files.length>10){alert('الحد الأقصى 10 صور');input.value='';return}
+document.getElementById('photoCount').textContent=input.files.length+' صورة محددة';
+}
+
 async function finalInv(){
 IS.phone=document.getElementById('iP')?.value||IS.phone;
 IS.area=document.getElementById('iA')?.value||IS.area;
@@ -465,15 +470,27 @@ const numStr=String(num).padStart(4,'0');
 await db.from('settings').update({value:String(num+1)}).eq('key','next_invoice_num');
 const hasCust=IS.svcs.some(s=>s.cat==='سجاد');
 const total=IS.svcs.reduce((s,x)=>s+x.price,0);
-const{data:inv,error}=await db.from('invoices').insert({invoice_num:numStr,phone:IS.phone,area:IS.area,total,payment:IS.pay,status:'unpaid',worker_name:U.name,invoice_date:new Date().toISOString().split('T')[0],has_custody:hasCust,custody_current_worker:hasCust?U.name:''}).select().single();
+const notes=document.getElementById('iNotes')?.value||'';
+const{data:inv,error}=await db.from('invoices').insert({invoice_num:numStr,phone:IS.phone,area:IS.area,total,payment:IS.pay,status:'unpaid',worker_name:U.name,invoice_date:new Date().toISOString().split('T')[0],has_custody:hasCust,custody_current_worker:hasCust?U.name:'',notes:notes}).select().single();
 if(error){alert('خطأ: '+error.message);return}
 // save services
 for(const s of IS.svcs){
 await db.from('invoice_services').insert({invoice_id:inv.id,category:s.cat,sub_type:s.sub,carpet_length:s.l||0,carpet_width:s.w||0,qty:s.qty||1,price:s.price});
 }
+// save photos
+const photoInput=document.getElementById('iPhotos');
+if(photoInput&&photoInput.files.length>0){
+for(let i=0;i<Math.min(photoInput.files.length,10);i++){
+const file=photoInput.files[i];
+const base64=await fileToBase64(file);
+await db.from('invoice_photos').insert({invoice_id:inv.id,photo_data:base64});
+}
+}
 if(hasCust){await db.from('custody_steps').insert({invoice_id:inv.id,worker_name:U.name,action:'استلام',done:false,deadline:new Date(Date.now()+48*3600000).toISOString(),step_order:1})}
 clM();nav(U.role==='worker'?'home':pg);
 }
+
+function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)})}
 
 // === VIEW INVOICE ===
 async function vInv(id){
@@ -503,6 +520,15 @@ actH=`<div style="margin-top:12px"><div class="fr"><label>سبب الإلغاء<
 <div style="display:flex;gap:6px"><button class="btn br" onclick="appCanc(${id})">اعتماد الإلغاء</button><button class="btn bo" onclick="rejCanc(${id})">رفض</button></div></div>`;
 }
 if(U.role==='admin'){actH+=`<button class="btn bs bo" style="color:var(--red);margin-top:8px" onclick="delInv(${id})">🗑️ حذف</button>`}
+// load photos for managers/callcenter/admin
+let photosH='';
+if(U.role!=='worker'){
+const{data:photos}=await db.from('invoice_photos').select('*').eq('invoice_id',id);
+if(photos&&photos.length){
+photosH=`<div style="border-top:1px solid var(--brd);padding-top:12px;margin-top:12px"><p style="font-weight:700;color:var(--navy);margin-bottom:8px">📸 الصور (${photos.length})</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px">${photos.map(p=>`<img src="${p.photo_data}" style="width:100%;border-radius:8px;cursor:pointer;border:1px solid var(--brd)" onclick="window.open(this.src)">`).join('')}</div></div>`;
+}
+}
 const sl=svcs||[];
 oM('فاتورة #'+inv.invoice_num,`
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
@@ -513,12 +539,13 @@ oM('فاتورة #'+inv.invoice_num,`
 <div><span style="font-size:11px;color:var(--gry)">العامل</span><div style="font-weight:700">${inv.worker_name}</div></div>
 <div><span style="font-size:11px;color:var(--gry)">الدفع</span><div style="font-weight:700">${PL[inv.payment]||inv.payment}</div></div>
 </div>
+${inv.notes?`<div style="border-top:1px solid var(--brd);padding-top:12px;margin-bottom:12px"><p style="font-weight:700;color:var(--navy);margin-bottom:6px">📝 ملاحظة:</p><p style="font-size:13px;background:var(--bg);padding:10px;border-radius:8px">${inv.notes}</p></div>`:''}
 <div style="border-top:1px solid var(--brd);padding-top:12px"><p style="font-weight:700;color:var(--navy);margin-bottom:8px">الخدمات:</p>
 ${sl.map(s=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--brd);font-size:13px"><span>${s.category} - ${s.sub_type}${s.qty>1?' (×'+s.qty+')':''}</span><span style="font-weight:600">${s.price} KD</span></div>`).join('')}</div>
 <div class="it"><span class="tl">الإجمالي</span><span class="ta">${inv.total} KD</span></div>
 <div style="margin-top:8px"><span class="bdg b-${inv.status[0]}" style="font-size:13px;padding:5px 14px">${SL[inv.status]||inv.status}</span></div>
 ${inv.cancelled_by?`<div class="al al-r" style="margin-top:8px">تم الإلغاء من قبل ${inv.cancelled_by}: ${inv.cancel_reason}</div>`:''}
-${custH}${actH}`);
+${photosH}${custH}${actH}`);
 }
 
 async function payInv(id){await db.from('invoices').update({status:'paid'}).eq('id',id);clM();nav(pg)}
@@ -542,7 +569,7 @@ clM();vInv(id);
 }
 async function custTrans(id){
 // مندوب يشوف قائمة الغسيل — غسيل يشوف قائمة المناديب
-const targetGroup=U.worker_group==='مندوب'?'غسيل':'مندوب';
+const targetGroup=U.worker_group==='مندوب'?'شركة':'مندوب';
 const{data:workers}=await db.from('employees').select('*').eq('role','worker').eq('worker_group',targetGroup);
 const wl=workers||[];
 if(!wl.length){alert('لا يوجد موظفين في مجموعة '+targetGroup);return}
