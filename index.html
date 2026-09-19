@@ -153,10 +153,11 @@ let U=null,pg='home';
 const RL={'admin':'المدير العام','manager':'مدير','callcenter':'كول سنتر','worker':'عامل'};
 const SL={'paid':'مدفوعة','unpaid':'غير مدفوعة','cancelled':'ملغية','pending_cancel':'بانتظار الإلغاء'};
 const PL={'cash':'💵 Cash','card':'💳 Card','link':'🔗 Link'};
+function stBdg(s){return{'paid':'b-p','unpaid':'b-u','cancelled':'b-c','pending_cancel':'b-pc'}[s]||'b-u'}
 
 // === AUTH ===
 async function doLogin(){
-const un=document.getElementById('lUser').value.trim(),pw=document.getElementById('lPass').value;
+const un=document.getElementById('lUser').value.trim().toLowerCase(),pw=document.getElementById('lPass').value;
 if(!un||!pw)return;
 const{data,error}=await db.from('employees').select('*').eq('username',un).eq('password',pw).single();
 if(error||!data){const e=document.getElementById('lErr');e.textContent='اسم المستخدم أو الرقم السري غير صحيح';e.classList.remove('hid');return}
@@ -222,7 +223,7 @@ c.innerHTML=`${al}
 </div>
 <div class="cd"><div class="ch"><span class="ct-t">فواتير اليوم</span></div>
 <table><thead><tr><th>رقم</th><th>المنطقة</th><th>المبلغ</th><th>الحالة</th><th>العامل</th></tr></thead>
-<tbody>${list.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td style="font-weight:600">#${i.invoice_num}</td><td>${i.area}</td><td>${i.total} KD</td><td><span class="bdg b-${i.status[0]}">${SL[i.status]||i.status}</span></td><td>${i.worker_name}</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--gry);padding:24px">لا توجد فواتير اليوم</td></tr>'}</tbody></table></div>`;
+<tbody>${list.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td style="font-weight:600">#${i.invoice_num}</td><td>${i.area}</td><td>${i.total} KD</td><td><span class="bdg ${stBdg(i.status)}">${SL[i.status]||i.status}</span></td><td>${i.worker_name}</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--gry);padding:24px">لا توجد فواتير اليوم</td></tr>'}</tbody></table></div>`;
 }
 
 async function rWHome(c){
@@ -237,7 +238,7 @@ ${ol.length?ol.map(o=>`<div style="padding:12px;border:1px solid var(--brd);bord
 <div style="display:flex;gap:6px">${o.location_url?`<a href="${o.location_url}" target="_blank" class="btn bs bo">📌 الموقع</a>`:''}<button class="btn bs bp" onclick="oNewInv('${o.phone}','${o.area}')">إنشاء فاتورة</button></div></div>`).join(''):'<p style="text-align:center;color:var(--gry);padding:16px">لا توجد عناوين جديدة</p>'}</div>
 <div class="cd"><div class="ch"><span class="ct-t">فواتيري اليوم</span><button class="btn bs bp" onclick="oNewInv()">+ فاتورة جديدة</button></div>
 ${il.length?`<table><thead><tr><th>رقم</th><th>المنطقة</th><th>المبلغ</th><th>الحالة</th></tr></thead><tbody>
-${il.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td>#${i.invoice_num}</td><td>${i.area}</td><td>${i.total} KD</td><td><span class="bdg b-${i.status[0]}">${SL[i.status]||i.status}</span></td></tr>`).join('')}</tbody></table>`:'<p style="text-align:center;color:var(--gry);padding:16px">لا توجد فواتير</p>'}</div>
+${il.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td>#${i.invoice_num}</td><td>${i.area}</td><td>${i.total} KD</td><td><span class="bdg ${stBdg(i.status)}">${SL[i.status]||i.status}</span></td></tr>`).join('')}</tbody></table>`:'<p style="text-align:center;color:var(--gry);padding:16px">لا توجد فواتير</p>'}</div>
 <div style="margin-top:12px"><label style="font-size:13px;font-weight:600;color:var(--navy)">حالتك:</label>
 <div style="display:flex;gap:8px;margin-top:6px">
 <button class="btn bs ${U.status==='available'?'bg':'bo'}" onclick="setS('available')">✅ متاح</button>
@@ -257,7 +258,7 @@ c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">إضافة حج�
 <div class="fr"><label>العنوان (اختياري)</label><input type="text" id="bAd"></div>
 <div class="fr"><label>رابط الموقع</label><input type="url" id="bL" placeholder="رابط Google Maps"></div>
 <div class="fr"><label>التاريخ</label><input type="date" id="bD" value="${new Date().toISOString().split('T')[0]}"></div>
-<div class="fr"><label>تعيين عامل</label><select id="bW">${wl.map(w=>`<option value="${w.name}">${w.name} (${w.job}) ${w.status==='available'?'✅':'🔴'}</option>`).join('')}</select></div>
+<div class="fr"><label>تعيين عامل</label><select id="bW">${wl.map(w=>`<option value="${w.name}">${w.name} ${w.worker_group?'('+w.worker_group+')':''} ${w.status==='available'?'✅':'🔴'}</option>`).join('')}</select></div>
 <button class="btn bp" onclick="saveBk()">حفظ الحجز</button></div>
 <div class="cd"><div class="ch"><span class="ct-t">الحجوزات الحالية</span></div>
 <table><thead><tr><th>الهاتف</th><th>المنطقة</th><th>العامل</th><th>الموقع</th></tr></thead>
@@ -277,7 +278,7 @@ const{data}=await db.from('invoices').select('*').eq('invoice_date',today).order
 const list=data||[];
 c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">فواتير اليوم</span></div>
 <table><thead><tr><th>رقم</th><th>المنطقة</th><th>الهاتف</th><th>المبلغ</th><th>الدفع</th><th>الحالة</th><th>العامل</th></tr></thead>
-<tbody>${list.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td style="font-weight:600">#${i.invoice_num}</td><td>${i.area}</td><td>${i.phone}</td><td>${i.total} KD</td><td>${PL[i.payment]||i.payment}</td><td><span class="bdg b-${i.status[0]}">${SL[i.status]||i.status}</span></td><td>${i.worker_name}</td></tr>`).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--gry);padding:24px">لا توجد فواتير</td></tr>'}</tbody></table></div>`;
+<tbody>${list.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td style="font-weight:600">#${i.invoice_num}</td><td>${i.area}</td><td>${i.phone}</td><td>${i.total} KD</td><td>${PL[i.payment]||i.payment}</td><td><span class="bdg ${stBdg(i.status)}">${SL[i.status]||i.status}</span></td><td>${i.worker_name}</td></tr>`).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--gry);padding:24px">لا توجد فواتير</td></tr>'}</tbody></table></div>`;
 }
 
 async function rMyInv(c){
@@ -285,7 +286,7 @@ const{data}=await db.from('invoices').select('*').eq('worker_name',U.name).order
 const list=data||[];
 c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">جميع فواتيري</span><button class="btn bs bp" onclick="oNewInv()">+ فاتورة جديدة</button></div>
 <table><thead><tr><th>رقم</th><th>المنطقة</th><th>المبلغ</th><th>الحالة</th><th>التاريخ</th></tr></thead>
-<tbody>${list.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td>#${i.invoice_num}</td><td>${i.area}</td><td>${i.total} KD</td><td><span class="bdg b-${i.status[0]}">${SL[i.status]||i.status}</span></td><td>${i.invoice_date}</td></tr>`).join('')}</tbody></table></div>`;
+<tbody>${list.map(i=>`<tr style="cursor:pointer" onclick="vInv(${i.id})"><td>#${i.invoice_num}</td><td>${i.area}</td><td>${i.total} KD</td><td><span class="bdg ${stBdg(i.status)}">${SL[i.status]||i.status}</span></td><td>${i.invoice_date}</td></tr>`).join('')}</tbody></table></div>`;
 }
 
 // === ARCHIVE ===
@@ -298,27 +299,16 @@ let xb=U.role==='admin'?'<button class="btn bs bg" onclick="xExport()">📊 تص
 c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">الأرشيف</span>${xb}</div>
 ${dates.map(d=>`<div class="dg"><div class="dh"><span>📅 ${d}</span><span>${grp[d].length} فاتورة</span></div>
 <div class="dl">${grp[d].map(i=>`<div class="dr" onclick="vInv(${i.id})"><span style="font-weight:600">#${i.invoice_num}</span><span>${i.area}</span><span>${i.total} KD</span>
-<span class="bdg b-${i.status[0]}" style="${i.status==='cancelled'?'color:var(--red)':''}">${SL[i.status]||i.status}</span></div>`).join('')}</div></div>`).join('')||'<p style="text-align:center;color:var(--gry);padding:24px">لا يوجد أرشيف</p>'}</div>`;
+<span class="bdg ${stBdg(i.status)}" style="${i.status==='cancelled'?'color:var(--red)':''}">${SL[i.status]||i.status}</span></div>`).join('')}</div></div>`).join('')||'<p style="text-align:center;color:var(--gry);padding:24px">لا يوجد أرشيف</p>'}</div>`;
 }
 
-function xExport(){
-let csv='\uFEFF"رقم","المنطقة","الهاتف","المبلغ","الدفع","الحالة","العامل","التاريخ"\n';
-document.querySelectorAll('.dr').forEach(r=>{
-const cells=r.querySelectorAll('span');
-if(cells.length>=4)csv+=`"${cells[0].textContent}","${cells[1].textContent}","","${cells[2].textContent}","","${cells[3].textContent}","",""\n`;
-});
+async function xExport(){
+const{data}=await db.from('invoices').select('*').in('status',['paid','cancelled']).order('invoice_date',{ascending:false});
+const list=data||[];
+let csv='\uFEFF"رقم الفاتورة","المنطقة","الهاتف","المبلغ","طريقة الدفع","الحالة","العامل","التاريخ"\n';
+list.forEach(i=>{csv+=`"${i.invoice_num}","${i.area}","${i.phone}","${i.total}","${i.payment}","${SL[i.status]||i.status}","${i.worker_name}","${i.invoice_date}"\n`});
 const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
 const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='masayel_archive.csv';a.click();
-}
-
-// === WORKERS ===
-async function rWork(c){
-const{data}=await db.from('employees').select('*').eq('role','worker');
-const list=data||[];
-c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">حالة العمال</span></div>
-${list.map(w=>`<div class="wr"><div class="wa">${w.name.charAt(0)}</div>
-<div class="wi"><div class="wn">${w.name}</div><div class="wj">${w.job||''} ${w.worker_group?'- '+w.worker_group:''}</div></div>
-<span class="bdg b-${w.status==='available'?'a':'b'}">${w.status==='available'?'✅ متاح':'🔴 مشغول'}</span></div>`).join('')}</div>`;
 }
 
 // === EMPLOYEES ===
@@ -326,8 +316,8 @@ async function rEmp(c){
 const{data}=await db.from('employees').select('*').order('created_at');
 const list=(data||[]).filter(u=>u.role!=='admin');
 c.innerHTML=`<div class="cd"><div class="ch"><span class="ct-t">إدارة الموظفين</span><button class="btn bs bp" onclick="oAddEmp()">+ إضافة موظف</button></div>
-<table><thead><tr><th>الاسم</th><th>المستخدم</th><th>الدور</th><th>المهنة</th><th>الرابط</th><th>الإجراء</th></tr></thead>
-<tbody>${list.map(u=>{const lnk=window.location.origin+window.location.pathname+'?u='+u.username;return`<tr><td style="font-weight:600">${u.name}</td><td>${u.username}</td><td><span class="bdg" style="background:#dbeafe;color:#1e40af">${RL[u.role]||u.role}</span></td><td>${u.job||'-'}</td>
+<table><thead><tr><th>الاسم</th><th>المستخدم</th><th>الدور</th><th>المجموعة</th><th>الرابط</th><th>الإجراء</th></tr></thead>
+<tbody>${list.map(u=>{const lnk=window.location.origin+window.location.pathname+'?u='+u.username;return`<tr><td style="font-weight:600">${u.name}</td><td>${u.username}</td><td><span class="bdg" style="background:#dbeafe;color:#1e40af">${RL[u.role]||u.role}</span></td><td>${u.worker_group||'-'}</td>
 <td><button class="btn bs bo" onclick="copyLink('${lnk}')" style="font-size:11px">📋 نسخ الرابط</button></td>
 <td><button class="btn bs bo" style="color:var(--red)" onclick="delEmp(${u.id})">حذف</button></td></tr>`}).join('')}</tbody></table></div>`;
 }
@@ -344,8 +334,9 @@ oM('إضافة موظف جديد',`
 }
 
 async function saveEmp(){
-const emp={name:document.getElementById('eN').value,username:document.getElementById('eU').value,password:document.getElementById('eP').value,role:document.getElementById('eR').value,job:'',worker_group:document.getElementById('eG').value,status:'available'};
+const emp={name:document.getElementById('eN').value.trim(),username:document.getElementById('eU').value.trim().toLowerCase(),password:document.getElementById('eP').value,role:document.getElementById('eR').value,job:'',worker_group:document.getElementById('eG').value,status:'available'};
 if(!emp.name||!emp.username||!emp.password){alert('أكمل الحقول');return}
+if(/\s/.test(emp.username)){alert('اسم المستخدم لا يحتوي على مسافات');return}
 const{data,error}=await db.from('employees').insert(emp).select().single();
 if(error){alert('خطأ: '+error.message);return}
 const link=window.location.origin+window.location.pathname+'?u='+emp.username;
@@ -543,7 +534,7 @@ ${inv.notes?`<div style="border-top:1px solid var(--brd);padding-top:12px;margin
 <div style="border-top:1px solid var(--brd);padding-top:12px"><p style="font-weight:700;color:var(--navy);margin-bottom:8px">الخدمات:</p>
 ${sl.map(s=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--brd);font-size:13px"><span>${s.category} - ${s.sub_type}${s.qty>1?' (×'+s.qty+')':''}</span><span style="font-weight:600">${s.price} KD</span></div>`).join('')}</div>
 <div class="it"><span class="tl">الإجمالي</span><span class="ta">${inv.total} KD</span></div>
-<div style="margin-top:8px"><span class="bdg b-${inv.status[0]}" style="font-size:13px;padding:5px 14px">${SL[inv.status]||inv.status}</span></div>
+<div style="margin-top:8px"><span class="bdg ${stBdg(inv.status)}" style="font-size:13px;padding:5px 14px">${SL[inv.status]||inv.status}</span></div>
 ${inv.cancelled_by?`<div class="al al-r" style="margin-top:8px">تم الإلغاء من قبل ${inv.cancelled_by}: ${inv.cancel_reason}</div>`:''}
 ${photosH}${custH}${actH}`);
 }
@@ -575,7 +566,7 @@ const wl=workers||[];
 if(!wl.length){alert('لا يوجد موظفين في مجموعة '+targetGroup);return}
 oM('طلب تسليم العهدة',`
 <p style="font-size:13px;color:var(--gry);margin-bottom:12px">تسليم إلى مجموعة: <strong>${targetGroup}</strong></p>
-<div class="fr"><label>اختر الموظف</label><select id="trTo">${wl.map(w=>`<option value="${w.name}">${w.name} (${w.job}) ${w.status==='available'?'✅':'🔴'}</option>`).join('')}</select></div>
+<div class="fr"><label>اختر الموظف</label><select id="trTo">${wl.map(w=>`<option value="${w.name}">${w.name} ${w.worker_group?'('+w.worker_group+')':''} ${w.status==='available'?'✅':'🔴'}</option>`).join('')}</select></div>
 <button class="btn bp" onclick="doTrans(${id})" style="width:100%;margin-top:8px">طلب الموافقة</button>`);
 }
 async function doTrans(id){
@@ -585,7 +576,7 @@ await db.from('custody_steps').update({done:true}).eq('invoice_id',id).eq('worke
 const{data:maxS}=await db.from('custody_steps').select('step_order').eq('invoice_id',id).order('step_order',{ascending:false}).limit(1).single();
 const nextO=(maxS?.step_order||0)+1;
 const{data:toEmp}=await db.from('employees').select('worker_group').eq('name',to).single();
-const action=toEmp?.worker_group==='غسيل'?'استلام للغسيل':'استلام للتوصيل';
+const action=toEmp?.worker_group==='شركة'?'استلام للغسيل':'استلام للتوصيل';
 await db.from('custody_steps').insert({invoice_id:id,worker_name:to,action:action,done:false,deadline:new Date(Date.now()+48*3600000).toISOString(),step_order:nextO});
 await db.from('invoices').update({custody_current_worker:to}).eq('id',id);
 // notification
@@ -613,7 +604,7 @@ function clM(){document.getElementById('mOv').classList.remove('sh')}
 // === URL PARAMS (employee links) ===
 async function checkURL(){
 const p=new URLSearchParams(window.location.search);
-const u=p.get('u');
+const u=p.get('u')?.trim()?.toLowerCase();
 if(u){
 // Employee link — show only their username
 const{data:emp}=await db.from('employees').select('name,username,role').eq('username',u).single();
